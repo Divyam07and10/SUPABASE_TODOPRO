@@ -83,19 +83,21 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
                             value={formData.description}
                             onChange={(e) => handleChange('description', e.target.value)}
                         />
-                        <FormControl fullWidth>
-                            <InputLabel id="status-label">Status</InputLabel>
-                            <Select
-                                labelId="status-label"
-                                value={formData.status}
-                                label="Status"
-                                onChange={(e) => handleChange('status', e.target.value)}
-                            >
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="completed">Completed</MenuItem>
-                                <MenuItem value="delayed">Delayed</MenuItem>
-                            </Select>
-                        </FormControl>
+                        {initialData && (
+                            <FormControl fullWidth>
+                                <InputLabel id="status-label">Status</InputLabel>
+                                <Select
+                                    labelId="status-label"
+                                    value={formData.status}
+                                    label="Status"
+                                    onChange={(e) => handleChange('status', e.target.value)}
+                                >
+                                    <MenuItem value="pending">Pending</MenuItem>
+                                    <MenuItem value="completed">Completed</MenuItem>
+                                    <MenuItem value="delayed">Delayed</MenuItem>
+                                </Select>
+                            </FormControl>
+                        )}
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                             <TextField
                                 required
