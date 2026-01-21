@@ -13,11 +13,8 @@ export default function ProfileContainer() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-
-    // Grid/View Logic State
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({});
-
     const [todos, setTodos] = useState([]);
     const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, delayed: 0, completionRate: 0 });
 
@@ -33,11 +30,9 @@ export default function ProfileContainer() {
                 setProfile(profileData);
                 setTodos(todosData || []);
 
-                // Calculate Stats
                 const total = todosData?.length || 0;
                 const completed = todosData?.filter(t => t.is_complete || t.status === 'completed').length || 0;
                 const delayed = todosData?.filter(t => t.status === 'delayed').length || 0;
-                // Pending is everything else not completed or delayed
                 const pending = total - completed - delayed;
                 const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
