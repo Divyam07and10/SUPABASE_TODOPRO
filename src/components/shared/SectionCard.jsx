@@ -22,14 +22,12 @@ const SectionCard = ({ title, icon, content }) => {
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {content.map((item, index) => {
                         if (typeof item === 'string') {
-                            // Simple text paragraph (Terms style)
                             return (
                                 <Typography key={index} variant="body2" sx={{ color: '#4b5563', lineHeight: 1.6 }}>
                                     {item}
                                 </Typography>
                             );
                         } else {
-                            // Subtitle + Text (Privacy style)
                             return (
                                 <Box key={index}>
                                     {item.subtitle && (

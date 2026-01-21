@@ -48,7 +48,6 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
         <Container component="main" maxWidth="lg">
             <Box sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-                {/* 1. Header/Details Card */}
                 <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
                     <Grid container spacing={3} alignItems="center" justifyContent="space-between">
                         <Grid item>
@@ -102,7 +101,6 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                     </Grid>
                 </Paper>
 
-                {/* 2. Stats & Activity Card */}
                 <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
                     <Grid container spacing={2} sx={{ mb: 4 }}>
                         <Grid item xs={6} sm={3}>
@@ -195,7 +193,6 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                 </Paper>
             </Box>
 
-            {/* Edit Profile Dialog */}
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
                 <DialogTitle sx={{ fontWeight: 700 }}>Edit Profile</DialogTitle>
                 <DialogContent>

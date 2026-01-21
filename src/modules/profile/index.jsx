@@ -28,13 +28,10 @@ export default function ProfileContainer() {
                 setProfile(profileData);
                 setTodos(todosData || []);
 
-                // Calculate Stats
                 const total = todosData?.length || 0;
                 const completed = todosData?.filter(t => t.is_complete || t.status === 'completed').length || 0;
                 const delayed = todosData?.filter(t => t.status === 'delayed').length || 0;
-                // Pending is everything else not completed or delayed
                 const pending = total - completed - delayed;
-
                 const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
                 setStats({ total, completed, pending, delayed, completionRate });

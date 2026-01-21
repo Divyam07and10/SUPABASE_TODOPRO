@@ -42,7 +42,6 @@ export const TodoProvider = ({ children }) => {
                 ...todo,
                 user_id: user.id,
             };
-
             const data = await todoService.addTodo(newTodo);
             if (data && data.length > 0) {
                 setTodos((prev) => [data[0], ...prev]);

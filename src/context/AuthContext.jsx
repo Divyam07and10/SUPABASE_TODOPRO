@@ -20,17 +20,12 @@ export const AuthProvider = ({ children }) => {
         const initializeAuth = async () => {
             const userId = reduxUser?.id || reduxSession?.user?.id;
             if (userId) {
-                // Optional: Verify session with server or just trust persisted state
-                // For robustness, let's fetch fresh profile
                 const fetchedUser = await authService.getUserProfile(userId);
                 if (fetchedUser) {
-                    setUser(fetchedUser);
-                    // Update Redux with fresh profile if needed, or just ensure consistency
-                    if (JSON.stringify(fetchedUser) !== JSON.stringify(reduxUser)) {
+                    setUser(fetchedUser);                    if (JSON.stringify(fetchedUser) !== JSON.stringify(reduxUser)) {
                         dispatch(setAuth({ user: fetchedUser, session: reduxSession }));
                     }
                 } else {
-                    // Session invalid or profile missing
                     dispatch(clearAuth());
                     setUser(null);
                 }
@@ -40,22 +35,15 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         };
         initializeAuth();
-    }, [dispatch, reduxUser?.id, reduxSession?.user?.id]); // Depend on Redux state changes
+    }, [dispatch, reduxUser?.id, reduxSession?.user?.id]);
 
     const login = async (email, password) => {
         try {
             setLoading(true);
             const data = await authService.login(email, password);
-
             if (data.access_token) {
-                // No manual localStorage setItem here. Redux persist handles it.
-                // We just need to get the profile.
-                // But wait, authService.login returns session, not profile (usually).
-                // We need to fetch profile after login? `data.user.id` is in session.
-
                 const userId = data.user?.id;
                 const fetchedUser = await authService.getUserProfile(userId, data.access_token);
-
                 if (fetchedUser) {
                     setUser(fetchedUser);
                     dispatch(setAuth({ user: fetchedUser, session: data }));
@@ -81,11 +69,9 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             const data = await authService.register(email, password, profileData);
-
             if (data.access_token) {
                 const userId = data.user?.id;
                 const fetchedUser = await authService.getUserProfile(userId, data.access_token);
-
                 if (fetchedUser) {
                     setUser(fetchedUser);
                     dispatch(setAuth({ user: fetchedUser, session: data }));
@@ -101,7 +87,6 @@ export const AuthProvider = ({ children }) => {
                 toast.success('Registration successful! Please check your email to confirm.');
                 router.push('/login');
             }
-
         } catch (error) {
             console.error('Registration error', error);
             toast.error('Registration failed');

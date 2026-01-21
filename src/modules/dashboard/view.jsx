@@ -35,7 +35,6 @@ const TodoView = ({
     const processedTodos = useMemo(() => {
         let result = [...todos];
 
-        // Search filter
         if (searchQuery.trim()) {
             const term = searchQuery.toLowerCase();
             result = result.filter((todo) =>
@@ -44,7 +43,6 @@ const TodoView = ({
             );
         }
 
-        // Status Filter
         if (statusFilter !== 'all') {
             result = result.filter((todo) => {
                 const isCompleted = todo.is_complete || todo.status === 'completed';
@@ -55,7 +53,6 @@ const TodoView = ({
             });
         }
 
-        // Sorting
         result.sort((a, b) => {
             switch (sortBy) {
                 case 'start_asc':

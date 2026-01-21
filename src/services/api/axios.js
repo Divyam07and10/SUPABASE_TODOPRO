@@ -19,8 +19,6 @@ axiosInstance.interceptors.request.use(
     (config) => {
         if (typeof window !== 'undefined') {
             const state = store.getState();
-            // Access token path depends on how redux-persist rehydrates and your slice structure
-            // Assuming authSlice puts user/session in state.auth
             const token = state.auth.session?.access_token;
             const isAuthRoute = config.url?.startsWith('/auth/v1');
 
