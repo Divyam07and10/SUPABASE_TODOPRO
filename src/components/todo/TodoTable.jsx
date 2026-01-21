@@ -15,6 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { Typography } from '@mui/material';
 import { format } from 'date-fns';
 
 const TodoTable = ({ todos, onEdit, onDelete, onToggleComplete }) => {
@@ -47,88 +48,94 @@ const TodoTable = ({ todos, onEdit, onDelete, onToggleComplete }) => {
                         <TableCell sx={{ fontWeight: 'bold', width: '8%' }}>Status</TableCell>
                         <TableCell sx={{ fontWeight: 'bold', width: '12%' }}>Start Date</TableCell>
                         <TableCell sx={{ fontWeight: 'bold', width: '12%' }}>End Date</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', width: '12%' }}>Created At</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', width: '12%' }}>Updated At</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', width: '12%' }}>Completed At</TableCell>
                         <TableCell sx={{ fontWeight: 'bold', width: '10%' }} align="center">
                             Actions
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {todos.map((todo) => {
-                        const isCompleted = todo.is_complete || todo.status === 'completed';
-                        return (
-                            <TableRow
-                                key={todo.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell>
-                                    <Checkbox
-                                        checked={isCompleted}
-                                        onChange={() => onToggleComplete(todo)}
-                                        icon={<RadioButtonUncheckedIcon />}
-                                        checkedIcon={<CheckCircleIcon />}
-                                        color="success"
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    component="th"
-                                    scope="row"
-                                    sx={{
-                                        textDecoration: isCompleted ? 'line-through' : 'none',
-                                        opacity: isCompleted ? 0.6 : 1
-                                    }}
+                    {todos.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
+                                <Typography variant="body1" color="text.secondary">
+                                    No tasks found.
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    ) : (
+                        todos.map((todo) => {
+                            const isCompleted = todo.is_complete || todo.status === 'completed';
+                            return (
+                                <TableRow
+                                    key={todo.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
-                                    {todo.title}
-                                </TableCell>
-                                <TableCell
-                                    sx={{
-                                        maxWidth: 300,
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        opacity: isCompleted ? 0.6 : 1
-                                    }}
-                                >
-                                    {todo.description || '-'}
-                                </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        label={todo.status}
-                                        color={getStatusColor(todo.status)}
-                                        size="small"
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    {todo.task_startdate ? format(new Date(todo.task_startdate), 'MMM d, HH:mm') : '-'}
-                                </TableCell>
-                                <TableCell>
-                                    {todo.task_enddate ? format(new Date(todo.task_enddate), 'MMM d, HH:mm') : '-'}
-                                </TableCell>
-                                <TableCell>
-                                    {todo.created_at ? format(new Date(todo.created_at), 'MMM d, HH:mm') : '-'}
-                                </TableCell>
-                                <TableCell>
-                                    {todo.updated_at ? format(new Date(todo.updated_at), 'MMM d, HH:mm') : '-'}
-                                </TableCell>
-                                <TableCell align="center">
-                                    <IconButton
-                                        color="primary"
-                                        onClick={() => onEdit(todo)}
-                                        disabled={isCompleted}
+                                    <TableCell>
+                                        <Checkbox
+                                            checked={isCompleted}
+                                            onChange={() => onToggleComplete(todo)}
+                                            icon={<RadioButtonUncheckedIcon />}
+                                            checkedIcon={<CheckCircleIcon />}
+                                            color="success"
+                                        />
+                                    </TableCell>
+                                    <TableCell
+                                        component="th"
+                                        scope="row"
+                                        sx={{
+                                            textDecoration: isCompleted ? 'line-through' : 'none',
+                                            opacity: isCompleted ? 0.6 : 1
+                                        }}
                                     >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        color="error"
-                                        onClick={() => onDelete(todo.id)}
+                                        {todo.title}
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            maxWidth: 300,
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            opacity: isCompleted ? 0.6 : 1
+                                        }}
                                     >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        );
-                    })}
+                                        {todo.description || '-'}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={isCompleted ? 'completed' : todo.status}
+                                            color={getStatusColor(isCompleted ? 'completed' : todo.status)}
+                                            size="small"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {todo.task_startdate ? format(new Date(todo.task_startdate), 'MMM d, HH:mm') : '-'}
+                                    </TableCell>
+                                    <TableCell>
+                                        {todo.task_enddate ? format(new Date(todo.task_enddate), 'MMM d, HH:mm') : '-'}
+                                    </TableCell>
+                                    <TableCell>
+                                        {todo.completed_at ? format(new Date(todo.completed_at), 'MMM d, HH:mm') : '-'}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => onEdit(todo)}
+                                            disabled={isCompleted}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            color="error"
+                                            onClick={() => onDelete(todo.id)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    )}
                 </TableBody>
             </Table>
         </TableContainer>

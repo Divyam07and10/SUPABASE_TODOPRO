@@ -172,20 +172,6 @@ const TodoView = ({
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
                     <Typography>Loading tasks...</Typography>
                 </Box>
-            ) : processedTodos.length === 0 ? (
-                <Paper elevation={0} sx={{ p: 8, textAlign: 'center', bgcolor: '#f8f9fa', borderRadius: 4 }}>
-                    <Typography variant="h6" color="text.secondary" gutterBottom>
-                        {searchQuery || statusFilter !== 'all' ? 'No tasks found matching your filters' : 'No tasks yet'}
-                    </Typography>
-                    <Typography color="text.secondary" sx={{ mb: 3 }}>
-                        {searchQuery || statusFilter !== 'all' ? 'Try adjusting your search or filters' : 'Get started by creating a new task'}
-                    </Typography>
-                    {searchQuery || statusFilter !== 'all' ? (
-                        <Button variant="outlined" onClick={handleReset}>Clear Filters</Button>
-                    ) : (
-                        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddClick}>Create Task</Button>
-                    )}
-                </Paper>
             ) : (
                 <TodoTable
                     todos={processedTodos}

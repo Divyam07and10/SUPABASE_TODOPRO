@@ -14,7 +14,7 @@ export default function ProfileContainer() {
     const [saving, setSaving] = useState(false);
 
     const [todos, setTodos] = useState([]);
-    const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, overdue: 0, completionRate: 0 });
+    const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, delayed: 0, completionRate: 0 });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +22,7 @@ export default function ProfileContainer() {
             try {
                 const [profileData, todosData] = await Promise.all([
                     userService.getProfile(user.id),
-                    todoService.fetchTodos(user.id) // Assuming fetchTodos returns array of todos
+                    todoService.fetchTodos(user.id)
                 ]);
 
                 setProfile(profileData);
@@ -31,19 +31,16 @@ export default function ProfileContainer() {
                 // Calculate Stats
                 const total = todosData?.length || 0;
                 const completed = todosData?.filter(t => t.is_complete || t.status === 'completed').length || 0;
-                const pending = total - completed;
-                const overdue = todosData?.filter(t => {
-                    const isIncomplete = !t.is_complete && t.status !== 'completed';
-                    if (!isIncomplete || !t.end_date) return false;
-                    return new Date(t.end_date) < new Date();
-                }).length || 0;
+                const delayed = todosData?.filter(t => t.status === 'delayed').length || 0;
+                // Pending is everything else not completed or delayed
+                const pending = total - completed - delayed;
+
                 const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-                setStats({ total, completed, pending, overdue, completionRate });
+                setStats({ total, completed, pending, delayed, completionRate });
 
             } catch (error) {
                 console.error('Error fetching data', error);
-                // Fallback for profile if fetch fails but user exists (unlikely if auth is good)
                 if (user) {
                     setProfile({
                         id: user.id,
@@ -74,7 +71,7 @@ export default function ProfileContainer() {
         }
     };
 
-    const joinDate = user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'recently';
+    const joinDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'recently';
 
     return <ProfileView profile={profile} todos={todos} stats={stats} loading={loading} saving={saving} onSave={handleSave} joinDate={joinDate} />;
 }

@@ -1,20 +1,27 @@
 'use client';
 
 import React from 'react';
-import { Container, Box, Typography, TextField, Button, Avatar, Paper, CircularProgress } from '@mui/material';
+import { Container, Box, Typography, TextField, Button, Avatar, Paper, CircularProgress, InputAdornment, IconButton } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function LoginView({ loading, onSubmit }) {
+    const [showPassword, setShowPassword] = useState(false);
+
     return (
         <Container component="main" maxWidth="xs">
-            <Paper elevation={3} sx={{ mt: 8, p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 2 }}>
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5" sx={{ fontWeight: 600 }}>
-                    Sign in
-                </Typography>
+            <Paper elevation={3} sx={{ mt: 3, p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" sx={{ fontWeight: 600 }}>
+                        Sign in
+                    </Typography>
+                </Box>
                 <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
                     <TextField
                         margin="normal"
@@ -32,9 +39,21 @@ export default function LoginView({ loading, onSubmit }) {
                         fullWidth
                         name="password"
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         id="password"
                         autoComplete="current-password"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
                     />
                     <Button
                         type="submit"

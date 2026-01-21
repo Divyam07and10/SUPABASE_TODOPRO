@@ -64,5 +64,10 @@ export const authService = {
 
         return data;
     },
+
+    logout: async () => {
+        const { data } = await axiosInstance.post('/auth/v1/logout');
+        return data;
+    },
 };
 
