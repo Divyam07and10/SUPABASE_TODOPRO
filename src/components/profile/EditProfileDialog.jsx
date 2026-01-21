@@ -30,9 +30,9 @@ export default function EditProfileDialog({ open, onClose, formData, onFormChang
                         onChange={onFormChange}
                     >
                         <MenuItem value="">Select</MenuItem>
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
+                        <MenuItem value="male">Male</MenuItem>
+                        <MenuItem value="female">Female</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
                     </TextField>
                 </Box>
             </DialogContent>
