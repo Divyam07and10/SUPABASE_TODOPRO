@@ -1,20 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    Button,
-    Stack,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    IconButton
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
@@ -35,7 +22,6 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
 
         if (open) {
             if (initialData) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setFormData({
                     title: initialData.title || '',
                     description: initialData.description || '',
@@ -46,7 +32,6 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
             } else {
                 const now = new Date();
                 const end = new Date(now.getTime() + 60 * 60 * 1000);
-                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setFormData({
                     title: '',
                     description: '',

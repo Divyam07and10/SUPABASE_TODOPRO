@@ -22,7 +22,6 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
               <Header />
-              {/* Add top padding to avoid overlap with fixed AppBar header */}
               <main style={{ flex: 1, padding: '24px', paddingTop: '96px' }}>{children}</main>
               <Footer />
             </div>
