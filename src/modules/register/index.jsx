@@ -2,7 +2,7 @@
 
 import React from 'react';
 import RegisterView from './view';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/shared/context/AuthContext';
 import { toast } from 'react-toastify';
 
 export default function RegisterContainer() {

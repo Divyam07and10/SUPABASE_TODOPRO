@@ -1,7 +1,7 @@
 'use client';
 
 import TodoDashboard from '@/modules/dashboard';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/shared/context/AuthContext';
 import { TodoProvider } from '@/context/TodoContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

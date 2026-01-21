@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
             if (userId) {
                 const fetchedUser = await authService.getUserProfile(userId);
                 if (fetchedUser) {
-                    setUser(fetchedUser);                    if (JSON.stringify(fetchedUser) !== JSON.stringify(reduxUser)) {
+                    setUser(fetchedUser); if (JSON.stringify(fetchedUser) !== JSON.stringify(reduxUser)) {
                         dispatch(setAuth({ user: fetchedUser, session: reduxSession }));
                     }
                 } else {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         };
         initializeAuth();
-    }, [dispatch, reduxUser?.id, reduxSession?.user?.id]);
+    }, [dispatch, reduxUser, reduxSession]);
 
     const login = async (email, password) => {
         try {

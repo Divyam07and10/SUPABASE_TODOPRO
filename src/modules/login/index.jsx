@@ -2,7 +2,7 @@
 
 import React from 'react';
 import LoginView from './view';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/shared/context/AuthContext';
 
 export default function LoginContainer() {
     const { login, loading } = useAuth();

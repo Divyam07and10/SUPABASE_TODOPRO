@@ -33,24 +33,28 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
             return d.toISOString().slice(0, 16);
         };
 
-        if (initialData) {
-            setFormData({
-                title: initialData.title || '',
-                description: initialData.description || '',
-                status: initialData.status || 'pending',
-                task_startdate: formatDate(initialData.task_startdate),
-                task_enddate: formatDate(initialData.task_enddate),
-            });
-        } else {
-            const now = new Date();
-            const end = new Date(now.getTime() + 60 * 60 * 1000);
-            setFormData({
-                title: '',
-                description: '',
-                status: 'pending',
-                task_startdate: now.toISOString().slice(0, 16),
-                task_enddate: end.toISOString().slice(0, 16),
-            });
+        if (open) {
+            if (initialData) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setFormData({
+                    title: initialData.title || '',
+                    description: initialData.description || '',
+                    status: initialData.status || 'pending',
+                    task_startdate: formatDate(initialData.task_startdate),
+                    task_enddate: formatDate(initialData.task_enddate),
+                });
+            } else {
+                const now = new Date();
+                const end = new Date(now.getTime() + 60 * 60 * 1000);
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setFormData({
+                    title: '',
+                    description: '',
+                    status: 'pending',
+                    task_startdate: now.toISOString().slice(0, 16),
+                    task_enddate: end.toISOString().slice(0, 16),
+                });
+            }
         }
     }, [initialData, open]);
 

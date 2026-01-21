@@ -1,39 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Typography, TextField, Button, Box, CircularProgress, MenuItem, Grid, Avatar, Chip, Paper, Divider, List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Edit2, CheckCircle, Clock, Activity } from 'lucide-react';
 import { format } from 'date-fns';
 
-export default function ProfileView({ profile, todos, stats, loading, saving, onSave, joinDate }) {
-    const [formData, setFormData] = useState({});
-    const [open, setOpen] = useState(false);
-
-    const handleEditClick = () => {
-        if (profile) {
-            setFormData({
-                name: profile.name || '',
-                phone_no: profile.phone_no || '',
-                gender: profile.gender || '',
-            });
-        }
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await onSave(formData);
-        setOpen(false);
-    };
-
+export default function ProfileView({
+    profile,
+    todos,
+    stats,
+    loading,
+    saving,
+    joinDate,
+    open,
+    formData,
+    onEditClick,
+    onClose,
+    onFormChange,
+    onFormSubmit
+}) {
     if (loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f8f9fa' }}>
@@ -92,7 +77,7 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                             <Button
                                 variant="contained"
                                 startIcon={<Edit2 size={16} />}
-                                onClick={handleEditClick}
+                                onClick={onEditClick}
                                 sx={{ whiteSpace: 'nowrap' }}
                             >
                                 Edit Profile
@@ -193,23 +178,23 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                 </Paper>
             </Box>
 
-            <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+            <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
                 <DialogTitle sx={{ fontWeight: 700 }}>Edit Profile</DialogTitle>
                 <DialogContent>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box component="form" onSubmit={onFormSubmit} sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <TextField
                             label="Full Name"
                             name="name"
                             fullWidth
                             value={formData.name || ''}
-                            onChange={handleChange}
+                            onChange={onFormChange}
                         />
                         <TextField
                             label="Phone Number"
                             name="phone_no"
                             fullWidth
                             value={formData.phone_no || ''}
-                            onChange={handleChange}
+                            onChange={onFormChange}
                         />
                         <TextField
                             label="Gender"
@@ -217,7 +202,7 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                             select
                             fullWidth
                             value={formData.gender || ''}
-                            onChange={handleChange}
+                            onChange={onFormChange}
                         >
                             <MenuItem value="">Select</MenuItem>
                             <MenuItem value="Male">Male</MenuItem>
@@ -227,8 +212,8 @@ export default function ProfileView({ profile, todos, stats, loading, saving, on
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ p: 3 }}>
-                    <Button onClick={handleClose} color="inherit">Cancel</Button>
-                    <Button onClick={handleSubmit} variant="contained" disabled={saving}>Save Changes</Button>
+                    <Button onClick={onClose} color="inherit">Cancel</Button>
+                    <Button onClick={onFormSubmit} variant="contained" disabled={saving}>Save Changes</Button>
                 </DialogActions>
             </Dialog>
         </Container>
