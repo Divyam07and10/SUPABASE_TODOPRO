@@ -12,7 +12,7 @@ export default function TermsView({ lastUpdated, termsContent }) {
                     <Typography variant="h3" sx={{ fontWeight: 800, mb: 2 }}>
                         Terms of Service
                     </Typography>
-                    <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                    <Typography component="div" variant="body1" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
                         Last Updated: <Chip label={lastUpdated} size="small" />
                     </Typography>
                 </Box>
