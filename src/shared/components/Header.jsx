@@ -45,7 +45,7 @@ export default function Header() {
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
           <Tooltip title={user.email || 'Account'}>
             <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} size="small">
-              <Avatar sx={{ width: 32, height: 32 }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
                 {user.email
                   ? user.email.charAt(0).toUpperCase()
                   : <AccountCircleIcon />}
