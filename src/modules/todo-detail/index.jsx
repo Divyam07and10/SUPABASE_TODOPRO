@@ -7,6 +7,7 @@ import { useAuth } from '@/shared/context/AuthContext';
 import { useTodo } from '@/context/TodoContext';
 import TodoDetailView from './view';
 import TodoDialog from '@/components/todo/TodoDialog';
+import DeleteConfirmDialog from '@/components/todo/DeleteConfirmDialog';
 import { toast } from 'react-toastify';
 
 const TodoDetailContainer = () => {
@@ -17,13 +18,13 @@ const TodoDetailContainer = () => {
     const [todo, setTodo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const fetchDetail = useCallback(async () => {
         if (!user || !title) return;
         try {
             setLoading(true);
-            const decodedTitle = decodeURIComponent(title);
-            const data = await todoService.getTodoByTitle(user.id, decodedTitle);
+            const data = await todoService.getTodoByTitle(user.id, decodeURIComponent(title));
             setTodo(data);
         } catch (error) {
             toast.error('Failed to load task details');
@@ -32,58 +33,25 @@ const TodoDetailContainer = () => {
         }
     }, [user, title]);
 
-    useEffect(() => {
-        fetchDetail();
-    }, [fetchDetail]);
-
-    const handleEditClick = () => {
-        setIsEditDialogOpen(true);
-    };
+    useEffect(() => { fetchDetail(); }, [fetchDetail]);
 
     const handleEditSubmit = async (data) => {
-        try {
-            await updateTodo(todo.id, data);
-            setIsEditDialogOpen(false);
-            if (data.title && data.title !== todo.title) {
-                router.push(`/todo/${encodeURIComponent(data.title)}`);
-            } else {
-                await fetchDetail();
-            }
-        } catch (error) {
-            // Error toast handled by context
-        }
+        await updateTodo(todo.id, data);
+        setIsEditDialogOpen(false);
+        data.title && data.title !== todo.title ? router.push(`/todo/${encodeURIComponent(data.title)}`) : await fetchDetail();
     };
 
-    const handleDelete = async () => {
-        if (window.confirm('Are you sure you want to delete this task?')) {
-            try {
-                await deleteTodo(todo.id);
-                setTodo(null); // This will trigger the "Task not found" view
-            } catch (error) {
-                // Error toast handled by context
-            }
-        }
+    const handleConfirmDelete = async () => {
+        await deleteTodo(todo.id);
+        setIsDeleteDialogOpen(false);
+        router.push('/');
     };
 
-    const handleToggleComplete = async (e) => {
-        if (e) e.stopPropagation();
+    const handleToggleComplete = async () => {
         if (!todo) return;
-
-        // Robust check for completion status
-        const isCurrentlyCompleted = todo.status?.toLowerCase() === 'completed' || !!todo.completed_at || !!todo.is_complete;
-
-        const updates = {
-            status: isCurrentlyCompleted ? 'pending' : 'completed',
-            completed_at: isCurrentlyCompleted ? null : new Date().toISOString(),
-            is_complete: !isCurrentlyCompleted
-        };
-
-        try {
-            await updateTodo(todo.id, updates);
-            await fetchDetail();
-        } catch (error) {
-            // Error toast handled by context
-        }
+        const isComp = !(todo.status?.toLowerCase() === 'completed' || !!todo.completed_at || !!todo.is_complete);
+        await updateTodo(todo.id, { status: isComp ? 'completed' : 'pending', completed_at: isComp ? new Date().toISOString() : null, is_complete: isComp });
+        await fetchDetail();
     };
 
     return (
@@ -91,17 +59,15 @@ const TodoDetailContainer = () => {
             <TodoDetailView
                 todo={todo}
                 loading={loading}
-                onEdit={handleEditClick}
-                onDelete={handleDelete}
+                onEdit={() => setIsEditDialogOpen(true)}
+                onDelete={() => setIsDeleteDialogOpen(true)}
                 onToggleComplete={handleToggleComplete}
             />
             {todo && (
-                <TodoDialog
-                    open={isEditDialogOpen}
-                    onClose={() => setIsEditDialogOpen(false)}
-                    onSubmit={handleEditSubmit}
-                    initialData={todo}
-                />
+                <>
+                    <TodoDialog open={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} onSubmit={handleEditSubmit} initialData={todo} />
+                    <DeleteConfirmDialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} onConfirm={handleConfirmDelete} />
+                </>
             )}
         </>
     );
