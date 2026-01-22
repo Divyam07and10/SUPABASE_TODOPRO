@@ -15,7 +15,6 @@ export const RegisterProvider = ({ children }) => {
 
     const togglePasswordVisibility = () => setShowPassword(prev => !prev);
     const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(prev => !prev);
-    const setTerms = (value) => setTermsAccepted(value);
 
     const handleRegister = async (event) => {
         event.preventDefault();
@@ -27,13 +26,13 @@ export const RegisterProvider = ({ children }) => {
         const phone_no = data.get('phone_no');
         const gender = data.get('gender');
 
-        if (!email || !password || !name || !phone_no) {
+        if (!email || !password || !name) {
             toast.error('Please fill in all required fields');
             return;
         }
 
-        if (password.length < 6) {
-            toast.error('Password must be at least 6 characters');
+        if (password.length < 8) {
+            toast.error('Password must be at least 8 characters');
             return;
         }
 
@@ -55,7 +54,7 @@ export const RegisterProvider = ({ children }) => {
             formErrors,
             togglePasswordVisibility,
             toggleConfirmPasswordVisibility,
-            setTerms,
+            setTerms: setTermsAccepted,
             handleRegister
         }}>
             {children}
