@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { toast } from 'react-toastify';
 
 const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
     const formatDate = (date) => date ? new Date(date).toISOString().slice(0, 16) : '';
@@ -27,6 +28,15 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const start = new Date(formData.task_startdate);
+        const end = new Date(formData.task_enddate);
+
+        if (start >= end) {
+            toast.error('End Date of the task must be after Start Date');
+            return;
+        }
+
         const isCompleted = formData.status === 'completed';
         await onSubmit({
             ...formData,
