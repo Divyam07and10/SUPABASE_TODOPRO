@@ -18,7 +18,7 @@ export const TodoProvider = ({ children }) => {
             setLoading(true);
             const data = await todoService.fetchTodos(user.id);
             setTodos(data);
-        } catch (error) {
+        } catch {
             toast.error('Failed to fetch todos');
         } finally {
             setLoading(false);
@@ -93,7 +93,7 @@ export const TodoProvider = ({ children }) => {
             setTodos((prev) => prev.filter((t) => t.id !== id));
             await todoService.deleteTodo(id);
             toast.success('Todo deleted');
-        } catch (error) {
+        } catch {
             toast.error('Failed to delete todo');
             fetchTodos();
         }

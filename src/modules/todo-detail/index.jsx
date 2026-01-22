@@ -26,7 +26,7 @@ const TodoDetailContainer = () => {
             setLoading(true);
             const data = await todoService.getTodoByTitle(user.id, decodeURIComponent(title));
             setTodo(data);
-        } catch (error) {
+        } catch {
             toast.error('Failed to load task details');
         } finally {
             setLoading(false);
@@ -38,7 +38,11 @@ const TodoDetailContainer = () => {
     const handleEditSubmit = async (data) => {
         await updateTodo(todo.id, data);
         setIsEditDialogOpen(false);
-        data.title && data.title !== todo.title ? router.push(`/todo/${encodeURIComponent(data.title)}`) : await fetchDetail();
+        if (data.title && data.title !== todo.title) {
+            router.push(`/todo/${encodeURIComponent(data.title)}`);
+        } else {
+            await fetchDetail();
+        }
     };
 
     const handleConfirmDelete = async () => {
@@ -49,8 +53,12 @@ const TodoDetailContainer = () => {
 
     const handleToggleComplete = async () => {
         if (!todo) return;
-        const isComp = !(todo.status?.toLowerCase() === 'completed' || !!todo.completed_at || !!todo.is_complete);
-        await updateTodo(todo.id, { status: isComp ? 'completed' : 'pending', completed_at: isComp ? new Date().toISOString() : null, is_complete: isComp });
+        const isComp = !(todo.is_complete || todo.status === 'completed');
+        await updateTodo(todo.id, {
+            status: isComp ? 'completed' : 'pending',
+            is_complete: isComp,
+            completed_at: isComp ? new Date().toISOString() : null
+        });
         await fetchDetail();
     };
 
@@ -65,7 +73,7 @@ const TodoDetailContainer = () => {
             />
             {todo && (
                 <>
-                    <TodoDialog open={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} onSubmit={handleEditSubmit} initialData={todo} />
+                    <TodoDialog key={todo.id} open={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} onSubmit={handleEditSubmit} initialData={todo} />
                     <DeleteConfirmDialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} onConfirm={handleConfirmDelete} />
                 </>
             )}

@@ -1,34 +1,29 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
-    const [formData, setFormData] = useState({ title: '', description: '', status: 'pending', task_startdate: '', task_enddate: '' });
+    const formatDate = (date) => date ? new Date(date).toISOString().slice(0, 16) : '';
 
-    useEffect(() => {
-        const formatDate = (date) => date ? new Date(date).toISOString().slice(0, 16) : '';
-        if (open) {
-            if (initialData) {
-                const isComplete = !!(initialData.is_complete || initialData.completed_at || initialData.status?.toLowerCase() === 'completed');
-                setFormData({
-                    title: initialData.title || '',
-                    description: initialData.description || '',
-                    status: isComplete ? 'completed' : 'pending',
-                    task_startdate: formatDate(initialData.task_startdate),
-                    task_enddate: formatDate(initialData.task_enddate),
-                });
-            } else {
-                const now = new Date();
-                setFormData({
-                    title: '', description: '', status: 'pending',
-                    task_startdate: now.toISOString().slice(0, 16),
-                    task_enddate: new Date(now.getTime() + 3600000).toISOString().slice(0, 16),
-                });
-            }
+    const [formData, setFormData] = useState(() => {
+        if (initialData) {
+            return {
+                title: initialData.title || '',
+                description: initialData.description || '',
+                status: (initialData.is_complete || initialData.completed_at || initialData.status === 'completed') ? 'completed' : 'pending',
+                task_startdate: formatDate(initialData.task_startdate),
+                task_enddate: formatDate(initialData.task_enddate),
+            };
         }
-    }, [initialData, open]);
+        const now = new Date();
+        return {
+            title: '', description: '', status: 'pending',
+            task_startdate: now.toISOString().slice(0, 16),
+            task_enddate: new Date(now.getTime() + 3600000).toISOString().slice(0, 16),
+        };
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -38,7 +38,7 @@ export default function ProfileContainer() {
 
                 setStats({ total, completed, pending, delayed, completionRate });
 
-            } catch (error) {
+            } catch {
                 if (user) {
                     setProfile({
                         id: user.id,
@@ -86,7 +86,7 @@ export default function ProfileContainer() {
             const updated = await authService.updateProfile(user.id, updates);
             setProfile(updated);
             toast.success('Profile updated successfully');
-        } catch (error) {
+        } catch {
             toast.error('Failed to update profile');
         } finally {
             setSaving(false);

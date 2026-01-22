@@ -49,7 +49,7 @@ const TodoView = ({
         ) : (
             <TodoTable todos={todos} onEdit={onOpenDialog} onDelete={onDeleteClick} onToggleComplete={onToggleComplete} />
         )}
-        <TodoDialog open={dialogOpen} onClose={onCloseDialog} onSubmit={onSubmitDialog} initialData={selectedTodo} />
+        <TodoDialog key={selectedTodo?.id || 'new'} open={dialogOpen} onClose={onCloseDialog} onSubmit={onSubmitDialog} initialData={selectedTodo} />
     </Box>
 );
 

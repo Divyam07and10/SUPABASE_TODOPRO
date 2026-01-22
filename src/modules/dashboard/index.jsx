@@ -42,7 +42,13 @@ const TodoDashboard = () => {
 
     const handleOpenDialog = (todo) => { setSelectedTodo(todo); setDialogOpen(true); };
     const handleCloseDialog = () => { setDialogOpen(false); setSelectedTodo(null); };
-    const handleSubmitDialog = async (data) => { selectedTodo ? await updateTodo(selectedTodo.id, data) : await addTodo(data); };
+    const handleSubmitDialog = async (data) => {
+        if (selectedTodo) {
+            await updateTodo(selectedTodo.id, data);
+        } else {
+            await addTodo(data);
+        }
+    };
     const handleDeleteClick = (id) => setDeleteId(id);
     const handleConfirmDelete = async () => { if (deleteId) { await deleteTodo(deleteId); setDeleteId(null); } };
     const handleReset = () => { setSearchQuery(''); setSortBy('default'); setStatusFilter('all'); toast.info('Filters reset'); };
