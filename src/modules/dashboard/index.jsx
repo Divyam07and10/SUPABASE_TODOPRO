@@ -23,10 +23,10 @@ const TodoDashboard = () => {
         }
         if (statusFilter !== 'all') {
             result = result.filter(t => {
-                const isComp = t.is_complete || t.status === 'completed';
+                const isComp = t.is_complete;
                 if (statusFilter === 'completed') return isComp;
-                if (statusFilter === 'pending') return !isComp && t.status !== 'overdue' && t.status !== 'delayed';
-                if (statusFilter === 'overdue') return t.status === 'overdue' || t.status === 'delayed';
+                if (statusFilter === 'pending') return !isComp && t.status !== 'delayed';
+                if (statusFilter === 'overdue') return t.status === 'delayed';
                 return true;
             });
         }
@@ -51,7 +51,7 @@ const TodoDashboard = () => {
     };
     const handleDeleteClick = (id) => setDeleteId(id);
     const handleConfirmDelete = async () => { if (deleteId) { await deleteTodo(deleteId); setDeleteId(null); } };
-    const handleReset = () => { setSearchQuery(''); setSortBy('default'); setStatusFilter('all'); toast.info('Filters reset'); };
+    const handleReset = () => { setSearchQuery(''); setSortBy('default'); setStatusFilter('all'); toast.info('All filters are reseted'); };
 
     const handleToggleComplete = async (todo) => {
         const isComp = !todo.is_complete;
