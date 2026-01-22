@@ -72,6 +72,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const syncUserProfile = (profile) => {
+        if (profile) {
+            dispatch(setAuth({ user: { ...user, profile }, session }));
+        }
+    };
+
     const logout = () => {
         authService.logout();
         dispatch(clearAuth());
@@ -80,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, syncUserProfile }}>
             {children}
         </AuthContext.Provider>
     );

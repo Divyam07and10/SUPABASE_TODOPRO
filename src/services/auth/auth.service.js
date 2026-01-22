@@ -69,7 +69,8 @@ export const authService = {
 
     updateProfile: async (id, updates) => {
         const { data } = await axiosInstance.patch(`/rest/v1/profiles?id=eq.${id}`, updates);
-        if (data?.length > 0) return data[0];
+        if (Array.isArray(data) && data.length > 0) return data[0];
+        if (data && typeof data === 'object' && !Array.isArray(data)) return data;
         throw new Error('Failed to update profile');
     },
 };

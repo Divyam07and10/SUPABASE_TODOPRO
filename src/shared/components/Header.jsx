@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar, Toolbar, Typography, Box, IconButton,
   Avatar, Menu, MenuItem, Tooltip,
@@ -12,24 +12,39 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
 
 import { useAuth } from '@/shared/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const pathname = usePathname();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    setAnchorEl(null);
+  }, [pathname, user]);
 
   if (!user) return null;
 
-  const open = Boolean(anchorEl);
+  const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const navigateTo = (path) => {
+    handleMenuClose();
+    router.push(path);
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
+  };
 
   return (
     <AppBar position="fixed" color="default" elevation={1} sx={{ bgcolor: 'white' }}>
       <Toolbar>
-
         <Box
           sx={{ flex: 1, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-          onClick={() => router.push('/')}
+          onClick={() => navigateTo('/')}
         >
           <HomeIcon sx={{ mr: 1 }} />
           <Typography variant="h6" fontWeight="bold">
@@ -38,13 +53,13 @@ export default function Header() {
         </Box>
 
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button color="inherit" onClick={() => router.push('/')}>Home</Button>
-          <Button color="inherit" onClick={() => router.push('/profile')}>Profile</Button>
+          <Button color="inherit" onClick={() => navigateTo('/')}>Home</Button>
+          <Button color="inherit" onClick={() => navigateTo('/profile')}>Profile</Button>
         </Box>
 
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
           <Tooltip title={user.email || 'Account'}>
-            <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} size="small">
+            <IconButton onClick={handleMenuOpen} size="small">
               <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontWeight: 'bold' }}>
                 {user.profile?.name
                   ? user.profile.name.charAt(0).toUpperCase()
@@ -56,10 +71,10 @@ export default function Header() {
 
         <Menu
           anchorEl={anchorEl}
-          open={open}
-          onClose={() => setAnchorEl(null)}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
         >
-          <MenuItem onClick={() => router.push('/profile')}>
+          <MenuItem onClick={() => navigateTo('/profile')}>
             <ListItemIcon>
               <AccountCircleIcon fontSize="small" />
             </ListItemIcon>
@@ -68,14 +83,13 @@ export default function Header() {
 
           <Divider />
 
-          <MenuItem onClick={logout}>
+          <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
             Logout
           </MenuItem>
         </Menu>
-
       </Toolbar>
     </AppBar>
   );
