@@ -17,6 +17,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Typography } from '@mui/material';
 import { format } from 'date-fns';
+import Link from 'next/link';
 
 const TodoTable = ({ todos, onEdit, onDelete, onToggleComplete }) => {
     const getStatusColor = (status) => {
@@ -84,19 +85,30 @@ const TodoTable = ({ todos, onEdit, onDelete, onToggleComplete }) => {
                                         component="th"
                                         scope="row"
                                         sx={{
-                                            textDecoration: isCompleted ? 'line-through' : 'none',
-                                            opacity: isCompleted ? 0.6 : 1
+                                            wordBreak: 'break-word',
+                                            overflowWrap: 'anywhere'
                                         }}
                                     >
-                                        {todo.title}
+                                        <Link
+                                            href={`/todo/${encodeURIComponent(todo.title)}`}
+                                            style={{
+                                                textDecoration: 'none',
+                                                color: 'inherit',
+                                                fontWeight: 600,
+                                                cursor: 'pointer'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.color = '#3b82f6'}
+                                            onMouseLeave={(e) => e.target.style.color = 'inherit'}
+                                        >
+                                            {todo.title}
+                                        </Link>
                                     </TableCell>
                                     <TableCell
                                         sx={{
                                             maxWidth: 300,
                                             whiteSpace: 'nowrap',
                                             overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            opacity: isCompleted ? 0.6 : 1
+                                            textOverflow: 'ellipsis'
                                         }}
                                     >
                                         {todo.description || '-'}
@@ -121,7 +133,6 @@ const TodoTable = ({ todos, onEdit, onDelete, onToggleComplete }) => {
                                         <IconButton
                                             color="primary"
                                             onClick={() => onEdit(todo)}
-                                            disabled={isCompleted}
                                         >
                                             <EditIcon />
                                         </IconButton>

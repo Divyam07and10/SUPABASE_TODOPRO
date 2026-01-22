@@ -39,8 +39,8 @@ export default function RecentActivity({ todos }) {
                                     <ListItemText
                                         primary={
                                             <Typography variant="subtitle1" fontWeight={500} sx={{
-                                                textDecoration: isCompleted ? 'line-through' : 'none',
-                                                color: isCompleted ? 'text.secondary' : 'text.primary'
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'anywhere'
                                             }}>
                                                 {todo.title}
                                             </Typography>

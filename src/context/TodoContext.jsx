@@ -19,7 +19,6 @@ export const TodoProvider = ({ children }) => {
             const data = await todoService.fetchTodos(user.id);
             setTodos(data);
         } catch (error) {
-            console.error('Error fetching todos', error);
             toast.error('Failed to fetch todos');
         } finally {
             setLoading(false);
@@ -36,6 +35,14 @@ export const TodoProvider = ({ children }) => {
 
     const addTodo = async (todo) => {
         if (!user) return;
+
+        const isDuplicate = todos.some(t => t.title.toLowerCase() === todo.title.toLowerCase());
+        if (isDuplicate) {
+            const error = new Error('A task with this title already exists');
+            toast.error(error.message);
+            throw error;
+        }
+
         try {
             setLoading(true);
             const newTodo = {
@@ -48,7 +55,6 @@ export const TodoProvider = ({ children }) => {
                 toast.success('Todo added successfully');
             }
         } catch (error) {
-            console.error('Error adding todo', error);
             toast.error('Failed to add todo');
             throw error;
         } finally {
@@ -57,6 +63,15 @@ export const TodoProvider = ({ children }) => {
     };
 
     const updateTodo = async (id, updates) => {
+        if (updates.title) {
+            const isDuplicate = todos.some(t => t.id !== id && t.title.toLowerCase() === updates.title.toLowerCase());
+            if (isDuplicate) {
+                const error = new Error('A task with this title already exists');
+                toast.error(error.message);
+                throw error;
+            }
+        }
+
         try {
             setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
 
@@ -67,9 +82,9 @@ export const TodoProvider = ({ children }) => {
             }
             toast.success('Todo updated');
         } catch (error) {
-            console.error('Error updating todo', error);
             toast.error('Failed to update todo');
             fetchTodos();
+            throw error;
         }
     };
 
@@ -79,7 +94,6 @@ export const TodoProvider = ({ children }) => {
             await todoService.deleteTodo(id);
             toast.success('Todo deleted');
         } catch (error) {
-            console.error('Error deleting todo', error);
             toast.error('Failed to delete todo');
             fetchTodos();
         }

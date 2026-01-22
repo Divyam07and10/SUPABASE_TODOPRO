@@ -18,5 +18,10 @@ export const todoService = {
 
     deleteTodo: async (id) => {
         await axiosInstance.delete(`/rest/v1/todos?id=eq.${id}`);
+    },
+
+    getTodoByTitle: async (userId, title) => {
+        const { data } = await axiosInstance.get(`/rest/v1/todos?select=*,profiles:user_id(*)&title=eq.${title}&user_id=eq.${userId}`);
+        return data && data.length > 0 ? data[0] : null;
     }
 };

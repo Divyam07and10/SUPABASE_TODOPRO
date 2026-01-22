@@ -19,7 +19,7 @@ export const authService = {
                     };
                 }
             } catch (error) {
-                console.error('Profile fetch failed', error);
+                // Ignore error
             }
         }
         return null;
@@ -58,7 +58,7 @@ export const authService = {
                     }
                 );
             } catch (error) {
-                console.error('Profile creation failed', error);
+                // Ignore error
             }
         }
 

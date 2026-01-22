@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
@@ -22,10 +22,17 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
 
         if (open) {
             if (initialData) {
+                const isComplete = Boolean(
+                    initialData.is_complete === true ||
+                    initialData.is_complete === 'true' ||
+                    initialData.status?.toLowerCase() === 'completed' ||
+                    !!initialData.completed_at
+                );
+
                 setFormData({
                     title: initialData.title || '',
                     description: initialData.description || '',
-                    status: initialData.status || 'pending',
+                    status: isComplete ? 'completed' : 'pending',
                     task_startdate: formatDate(initialData.task_startdate),
                     task_enddate: formatDate(initialData.task_enddate),
                 });
@@ -50,8 +57,23 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.title || !formData.task_startdate || !formData.task_enddate) return;
-        await onSubmit(formData);
-        onClose();
+
+        // Synchronize is_complete and completed_at based on status
+        const isCompleted = formData.status === 'completed';
+        const submissionData = {
+            ...formData,
+            status: isCompleted ? 'completed' : 'pending',
+            is_complete: isCompleted,
+            completed_at: isCompleted ? (initialData?.completed_at || new Date().toISOString()) : null
+        };
+
+        try {
+            await onSubmit(submissionData);
+            onClose();
+        } catch (error) {
+            // Error handling is managed by the context (toast.error)
+            // We catch it here to prevent the dialog from closing
+        }
     };
 
     return (
@@ -83,21 +105,6 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
                             value={formData.description}
                             onChange={(e) => handleChange('description', e.target.value)}
                         />
-                        {initialData && (
-                            <FormControl fullWidth>
-                                <InputLabel id="status-label">Status</InputLabel>
-                                <Select
-                                    labelId="status-label"
-                                    value={formData.status}
-                                    label="Status"
-                                    onChange={(e) => handleChange('status', e.target.value)}
-                                >
-                                    <MenuItem value="pending">Pending</MenuItem>
-                                    <MenuItem value="completed">Completed</MenuItem>
-                                    <MenuItem value="delayed">Delayed</MenuItem>
-                                </Select>
-                            </FormControl>
-                        )}
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                             <TextField
                                 required
@@ -118,6 +125,19 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
                                 onChange={(e) => handleChange('task_enddate', e.target.value)}
                             />
                         </Stack>
+                        {initialData && (
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={formData.status?.toLowerCase() === 'completed'}
+                                        onChange={(e) => handleChange('status', e.target.checked ? 'completed' : 'pending')}
+                                        color="success"
+                                    />
+                                }
+                                label="Mark as Completed"
+                                sx={{ mt: 1 }}
+                            />
+                        )}
                     </Stack>
                 </DialogContent>
                 <DialogActions sx={{ p: 2 }}>

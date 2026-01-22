@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/shared/context/AuthContext';
+import { TodoProvider } from '@/context/TodoContext';
 import StoreProvider from './StoreProvider';
 import Header from '@/shared/components/Header';
 import Footer from '@/shared/components/Footer';
@@ -20,12 +21,14 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <StoreProvider>
           <AuthProvider>
-            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-              <Header />
-              <main style={{ flex: 1, padding: '24px', paddingTop: '96px' }}>{children}</main>
-              <Footer />
-            </div>
-            <ToastContainer position="bottom-right" />
+            <TodoProvider>
+              <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <Header />
+                <main style={{ flex: 1, padding: '24px', paddingTop: '96px' }}>{children}</main>
+                <Footer />
+              </div>
+              <ToastContainer position="bottom-right" />
+            </TodoProvider>
           </AuthProvider>
         </StoreProvider>
       </body>

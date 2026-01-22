@@ -39,7 +39,6 @@ export default function ProfileContainer() {
                 setStats({ total, completed, pending, delayed, completionRate });
 
             } catch (error) {
-                console.error('Error fetching data', error);
                 if (user) {
                     setProfile({
                         id: user.id,

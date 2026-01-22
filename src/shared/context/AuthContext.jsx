@@ -57,7 +57,6 @@ export const AuthProvider = ({ children }) => {
                 }
             }
         } catch (error) {
-            console.error('Login error', error);
             toast.error('Login failed');
             throw error;
         } finally {
@@ -88,7 +87,6 @@ export const AuthProvider = ({ children }) => {
                 router.push('/login');
             }
         } catch (error) {
-            console.error('Registration error', error);
             toast.error('Registration failed');
             throw error;
         } finally {
