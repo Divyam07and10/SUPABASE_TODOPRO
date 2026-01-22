@@ -4,7 +4,7 @@ import React from 'react';
 import { Box, Typography, Button, TextField, Paper, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { Add as AddIcon, Search as SearchIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import TodoTable from '@/components/todo/TodoTable';
-import TodoDialog from '@/components/todo/TodoDialog';
+import TodoDialog from '@/shared/components/TodoDialog';
 
 const TodoView = ({
     todos, loading, dialogOpen, selectedTodo, searchQuery, sortBy, statusFilter,

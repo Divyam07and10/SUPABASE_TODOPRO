@@ -1,31 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Box, Typography, TextField, Button, Avatar, Paper, CircularProgress, MenuItem, Checkbox, InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import Link from 'next/link';
+import { useRegister } from '@/context/RegisterContext';
 
-export default function RegisterView({ loading, onSubmit }) {
-    const [termsAccepted, setTermsAccepted] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [formErrors, setFormErrors] = useState({});
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const password = data.get('password');
-        const confirmPassword = data.get('confirmPassword');
-
-        if (password !== confirmPassword) {
-            setFormErrors({ confirmPassword: 'Passwords do not match' });
-            return;
-        }
-        setFormErrors({});
-        onSubmit(event);
-    };
+export default function RegisterView() {
+    const {
+        loading,
+        showPassword,
+        showConfirmPassword,
+        termsAccepted,
+        formErrors,
+        togglePasswordVisibility,
+        toggleConfirmPasswordVisibility,
+        setTerms,
+        handleRegister
+    } = useRegister();
 
     return (
         <Container component="main" maxWidth="sm">
@@ -38,7 +32,7 @@ export default function RegisterView({ loading, onSubmit }) {
                         Sign up
                     </Typography>
                 </Box>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3, width: '100%' }}>
+                <Box component="form" onSubmit={handleRegister} noValidate sx={{ mt: 3, width: '100%' }}>
                     <TextField
                         margin="normal"
                         required
@@ -73,6 +67,7 @@ export default function RegisterView({ loading, onSubmit }) {
                         name="gender"
                         label="Gender"
                         select
+                        defaultValue=""
                     >
                         <MenuItem value=""><em>None</em></MenuItem>
                         <MenuItem value="Male">Male</MenuItem>
@@ -91,10 +86,7 @@ export default function RegisterView({ loading, onSubmit }) {
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        edge="end"
-                                    >
+                                    <IconButton onClick={togglePasswordVisibility} edge="end">
                                         {showPassword ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                 </InputAdornment>
@@ -114,10 +106,7 @@ export default function RegisterView({ loading, onSubmit }) {
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        edge="end"
-                                    >
+                                    <IconButton onClick={toggleConfirmPasswordVisibility} edge="end">
                                         {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                 </InputAdornment>
@@ -127,10 +116,9 @@ export default function RegisterView({ loading, onSubmit }) {
 
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                         <Checkbox
-                            value="allowExtraEmails"
                             color="primary"
                             checked={termsAccepted}
-                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            onChange={(e) => setTerms(e.target.checked)}
                             sx={{ p: 0, mr: 1.5 }}
                         />
                         <Typography variant="body2" color="text.secondary">

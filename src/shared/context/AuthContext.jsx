@@ -10,55 +10,40 @@ import { setAuth, clearAuth } from '@/store/slices/authSlice';
 const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
-    const { user: reduxUser, session: reduxSession } = useSelector((state) => state.auth);
-    const [user, setUser] = useState(reduxUser);
+    const { user, session } = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const initializeAuth = async () => {
-            const userId = reduxUser?.id || reduxSession?.user?.id;
-            if (userId) {
-                const fetchedUser = await authService.getUserProfile(userId);
-                if (fetchedUser) {
-                    setUser(fetchedUser); if (JSON.stringify(fetchedUser) !== JSON.stringify(reduxUser)) {
-                        dispatch(setAuth({ user: fetchedUser, session: reduxSession }));
-                    }
-                } else {
-                    dispatch(clearAuth());
-                    setUser(null);
-                }
-            } else {
-                setUser(null);
+        const init = async () => {
+            const id = user?.id || session?.user?.id;
+            if (id) {
+                const profile = await authService.getUserProfile(id, session?.access_token, user || session?.user);
+                if (profile) dispatch(setAuth({ user: profile, session }));
+                else dispatch(clearAuth());
             }
             setLoading(false);
         };
-        initializeAuth();
-    }, [dispatch, reduxUser, reduxSession]);
+        init();
+    }, [dispatch]);
 
     const login = async (email, password) => {
         try {
             setLoading(true);
             const data = await authService.login(email, password);
             if (data.access_token) {
-                const userId = data.user?.id;
-                const fetchedUser = await authService.getUserProfile(userId, data.access_token);
-                if (fetchedUser) {
-                    setUser(fetchedUser);
-                    dispatch(setAuth({ user: fetchedUser, session: data }));
+                const profile = await authService.getUserProfile(data.user?.id, data.access_token, data.user);
+                if (profile) {
+                    dispatch(setAuth({ user: profile, session: data }));
                     toast.success('Login successful!');
                     router.push('/');
-                } else {
-                    authService.logout();
-                    setUser(null);
-                    dispatch(clearAuth());
-                    toast.error('Login failed: user profile not found');
+                    return;
                 }
             }
-        } catch (error) {
-            toast.error('Login failed');
-            throw error;
+            throw new Error();
+        } catch (e) {
+            toast.error(e.response?.data?.error_description || e.response?.data?.msg || 'Login failed');
         } finally {
             setLoading(false);
         }
@@ -69,26 +54,19 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             const data = await authService.register(email, password, profileData);
             if (data.access_token) {
-                const userId = data.user?.id;
-                const fetchedUser = await authService.getUserProfile(userId, data.access_token);
-                if (fetchedUser) {
-                    setUser(fetchedUser);
-                    dispatch(setAuth({ user: fetchedUser, session: data }));
+                const profile = await authService.getUserProfile(data.user?.id, data.access_token, data.user);
+                if (profile) {
+                    dispatch(setAuth({ user: profile, session: data }));
                     toast.success('Registration successful!');
                     router.push('/');
-                } else {
-                    authService.logout();
-                    setUser(null);
-                    dispatch(clearAuth());
-                    toast.error('Registration failed: user profile not created');
+                    return;
                 }
             } else if (data.user) {
-                toast.success('Registration successful! Please check your email to confirm.');
+                toast.success('Registration successful! Please verify your email.');
                 router.push('/login');
             }
-        } catch (error) {
-            toast.error('Registration failed');
-            throw error;
+        } catch (e) {
+            toast.error(e.response?.data?.error_description || e.response?.data?.msg || 'Registration failed');
         } finally {
             setLoading(false);
         }
@@ -96,7 +74,6 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         authService.logout();
-        setUser(null);
         dispatch(clearAuth());
         router.push('/login');
         toast.info('Logged out');
@@ -111,8 +88,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
+    if (!context) throw new Error('useAuth must be used within an AuthProvider');
     return context;
 };

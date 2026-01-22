@@ -6,10 +6,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useLogin } from '@/context/LoginContext';
 
-export default function LoginView({ loading, onSubmit }) {
-    const [showPassword, setShowPassword] = useState(false);
+export default function LoginView() {
+    const { loading, showPassword, togglePasswordVisibility, handleLogin } = useLogin();
 
     return (
         <Container component="main" maxWidth="xs">
@@ -22,7 +22,7 @@ export default function LoginView({ loading, onSubmit }) {
                         Sign in
                     </Typography>
                 </Box>
-                <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
+                <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1, width: '100%' }}>
                     <TextField
                         margin="normal"
                         required
@@ -45,10 +45,7 @@ export default function LoginView({ loading, onSubmit }) {
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        edge="end"
-                                    >
+                                    <IconButton onClick={togglePasswordVisibility} edge="end">
                                         {showPassword ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                 </InputAdornment>
