@@ -14,12 +14,11 @@ export const authService = {
                 const newProfile = {
                     id: userId,
                     email: userObject.email,
-                    name: metadata.name || metadata.full_name || 'User',
-                    phone_no: metadata.phone_no || metadata.phone || null,
-                    gender: metadata.gender || null,
-                    password_hash: metadata.password || 'managed_by_supabase_auth',
+                    name: metadata.name || 'User',
+                    phone_no: metadata.phone_no || '',
+                    gender: metadata.gender || '',
+                    password_hash: metadata.password,
                 };
-
                 try {
                     await axiosInstance.post('/rest/v1/profiles', newProfile, config);
                     return { id: userId, email: userObject.email, profile: newProfile };
@@ -38,10 +37,7 @@ export const authService = {
         const { data: signUpData } = await axiosInstance.post('/auth/v1/signup', {
             email,
             password,
-            data: {
-                ...profileData,
-                password
-            }
+            data: { ...profileData, password }
         });
 
         if (signUpData.user && signUpData.access_token) {
