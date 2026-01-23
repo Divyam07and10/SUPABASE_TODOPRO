@@ -3,11 +3,14 @@ import axiosInstance from '../api/axios';
 export const authService = {
     getUserProfile: async (userId, accessToken = null, userObject = null) => {
         if (!userId) return null;
+
         try {
             const config = accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {};
             const { data } = await axiosInstance.get(`/rest/v1/profiles?id=eq.${userId}`, config);
 
-            if (data?.length > 0) return { id: data[0].id, email: data[0].email, profile: data[0] };
+            if (data?.length > 0) {
+                return { id: data[0].id, email: data[0].email, profile: data[0] };
+            }
 
             if (accessToken && userObject) {
                 const metadata = userObject.user_metadata || {};
@@ -19,42 +22,62 @@ export const authService = {
                     gender: metadata.gender || '',
                     password_hash: metadata.password,
                 };
-                try {
-                    await axiosInstance.post('/rest/v1/profiles', newProfile, config);
-                    return { id: userId, email: userObject.email, profile: newProfile };
-                } catch { }
+
+                const { data } = await axiosInstance.post('/rest/v1/profiles', newProfile, config);
+                return {
+                    id: userId,
+                    email: userObject.email,
+                    profile: Array.isArray(data) && data.length > 0 ? data[0] : newProfile,
+                };
             }
-        } catch { }
-        return null;
+
+            return null;
+        } catch (error) {
+            throw error;
+        }
     },
 
     login: async (email, password) => {
-        const { data } = await axiosInstance.post('/auth/v1/token?grant_type=password', { email, password });
-        return data;
+        try {
+            const { data } = await axiosInstance.post('/auth/v1/token?grant_type=password', { email, password });
+            return data;
+        } catch (error) {
+            throw error;
+        }
     },
 
     register: async (email, password, profileData) => {
-        const { data: signUpData } = await axiosInstance.post('/auth/v1/signup', {
-            email,
-            password,
-            data: { ...profileData, password }
-        });
+        try {
+            const { data: signUpData } = await axiosInstance.post('/auth/v1/signup', {
+                email,
+                password,
+                data: { ...profileData, password }
+            });
 
-        if (signUpData.user && signUpData.access_token) {
-            try {
-                await axiosInstance.post('/rest/v1/profiles', {
+            if (signUpData.user && signUpData.access_token) {
+                const { data } = await axiosInstance.post('/rest/v1/profiles', {
                     id: signUpData.user.id,
                     email,
                     ...profileData,
                     password_hash: password,
                 }, { headers: { Authorization: `Bearer ${signUpData.access_token}` } });
-            } catch { }
+
+                const profile = Array.isArray(data) && data.length > 0 ? data[0] : data;
+                return { ...signUpData, profile };
+            }
+            return signUpData;
+        } catch (error) {
+            throw error;
         }
-        return signUpData;
     },
 
     logout: async () => {
-        return (await axiosInstance.post('/auth/v1/logout')).data;
+        try {
+            const { data } = await axiosInstance.post('/auth/v1/logout');
+            return data;
+        } catch (error) {
+            throw error;
+        }
     },
 
     getProfile: async (id) => {
