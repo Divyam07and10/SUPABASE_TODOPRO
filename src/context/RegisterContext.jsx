@@ -36,6 +36,12 @@ export const RegisterProvider = ({ children }) => {
             return;
         }
 
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+        if (!passwordRegex.test(password)) {
+            toast.error('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)');
+            return;
+        }
+
         if (password !== confirmPassword) {
             setFormErrors({ confirmPassword: 'Passwords do not match' });
             return;
