@@ -34,11 +34,12 @@ const TodoView = ({
             <FormControl sx={{ minWidth: 200 }} size="small">
                 <InputLabel>Sort By</InputLabel>
                 <Select value={sortBy} label="Sort By" onChange={(e) => onSortChange(e.target.value)} sx={{ borderRadius: 2 }}>
-                    <MenuItem value="default">Default (ID)</MenuItem>
-                    <MenuItem value="start_asc">Start Date: Oldest First</MenuItem>
+                    <MenuItem value="created_desc">Created At: Newest First</MenuItem>
+                    <MenuItem value="created_asc">Created At: Oldest First</MenuItem>
                     <MenuItem value="start_desc">Start Date: Newest First</MenuItem>
-                    <MenuItem value="end_asc">End Date: Oldest First</MenuItem>
+                    <MenuItem value="start_asc">Start Date: Oldest First</MenuItem>
                     <MenuItem value="end_desc">End Date: Newest First</MenuItem>
+                    <MenuItem value="end_asc">End Date: Oldest First</MenuItem>
                 </Select>
             </FormControl>
             <Button variant="outlined" onClick={onReset} startIcon={<RefreshIcon />} sx={{ height: 40, borderRadius: 2, textTransform: 'none' }}>Reset</Button>

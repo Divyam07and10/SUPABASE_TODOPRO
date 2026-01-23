@@ -13,7 +13,7 @@ export const DashboardProvider = ({ children }) => {
     const [selectedTodo, setSelectedTodo] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortBy, setSortBy] = useState('default');
+    const [sortBy, setSortBy] = useState('created_desc');
     const [statusFilter, setStatusFilter] = useState('all');
 
     const processedTodos = useMemo(() => {
@@ -35,11 +35,13 @@ export const DashboardProvider = ({ children }) => {
             });
         }
         result.sort((a, b) => {
+            if (sortBy === 'created_asc') return new Date(a.created_at) - new Date(b.created_at);
+            if (sortBy === 'created_desc') return new Date(b.created_at) - new Date(a.created_at);
             if (sortBy === 'start_asc') return new Date(a.task_startdate) - new Date(b.task_startdate);
             if (sortBy === 'start_desc') return new Date(b.task_startdate) - new Date(a.task_startdate);
             if (sortBy === 'end_asc') return new Date(a.task_enddate) - new Date(b.task_enddate);
             if (sortBy === 'end_desc') return new Date(b.task_enddate) - new Date(a.task_enddate);
-            return (a.id || 0) - (b.id || 0);
+            return new Date(b.created_at) - new Date(a.created_at);
         });
         return result;
     }, [todos, searchQuery, sortBy, statusFilter]);
@@ -55,7 +57,7 @@ export const DashboardProvider = ({ children }) => {
     };
     const handleDeleteClick = (id) => setDeleteId(id);
     const handleConfirmDelete = async () => { if (deleteId) { await deleteTodo(deleteId); setDeleteId(null); } };
-    const handleReset = () => { setSearchQuery(''); setSortBy('default'); setStatusFilter('all'); toast.info('All filters are reseted'); };
+    const handleReset = () => { setSearchQuery(''); setSortBy('created_desc'); setStatusFilter('all'); toast.info('All filters are reseted'); };
 
     const handleToggleComplete = async (todo) => {
         const isComp = !todo.is_complete;
