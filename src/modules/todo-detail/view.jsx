@@ -24,7 +24,7 @@ const InfoCard = ({ icon: Icon, label, value, subValue, color, bgcolor }) => (
 const TodoDetailView = ({ todo, loading, onEdit, onDelete }) => {
     const BackButton = (
         <Box mb={3}>
-            <Link href="/" legacyBehavior>
+            <Link href="/">
                 <Button startIcon={<ChevronLeft size={20} />} sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'none' }}>
                     Back to Dashboard
                 </Button>

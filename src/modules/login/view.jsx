@@ -62,7 +62,7 @@ export default function LoginView() {
                         {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
                     </Button>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Link href="/register" passHref legacyBehavior>
+                        <Link href="/register">
                             <Button variant="text" size="small">
                                 {"Don't have an account? Sign Up"}
                             </Button>
