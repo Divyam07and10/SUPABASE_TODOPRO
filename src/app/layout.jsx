@@ -8,6 +8,7 @@ import { TodoDetailProvider } from '@/context/TodoDetailContext';
 import StoreProvider from './StoreProvider';
 import Header from '@/shared/components/Header';
 import Footer from '@/shared/components/Footer';
+import RouteGuard from '@/shared/components/RouteGuard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,11 +29,13 @@ export default function RootLayout({ children }) {
               <ProfileProvider>
                 <DashboardProvider>
                   <TodoDetailProvider>
-                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-                      <Header />
-                      <main style={{ flex: 1, padding: '24px', paddingTop: '96px' }}>{children}</main>
-                      <Footer />
-                    </div>
+                    <RouteGuard>
+                      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                        <Header />
+                        <main style={{ flex: 1, padding: '24px', paddingTop: '96px' }}>{children}</main>
+                        <Footer />
+                      </div>
+                    </RouteGuard>
                     <ToastContainer position="bottom-right" />
                   </TodoDetailProvider>
                 </DashboardProvider>
