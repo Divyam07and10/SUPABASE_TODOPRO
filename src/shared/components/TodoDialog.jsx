@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Stack, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-toastify';
@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
     const formatDate = (date) => date ? new Date(date).toISOString().slice(0, 16) : '';
 
-    const [formData, setFormData] = useState(() => {
+    const getInitialFormData = () => {
         if (initialData) {
             return {
                 title: initialData.title || '',
@@ -20,11 +20,19 @@ const TodoDialog = ({ open, onClose, onSubmit, initialData }) => {
         }
         const now = new Date();
         return {
-            title: '', description: '', status: 'pending',
+            title: '',
+            description: '',
+            status: 'pending',
             task_startdate: now.toISOString().slice(0, 16),
             task_enddate: new Date(now.getTime() + 3600000).toISOString().slice(0, 16),
         };
-    });
+    };
+
+    const [formData, setFormData] = useState(getInitialFormData);
+
+    useEffect(() => {
+        setFormData(getInitialFormData());
+    }, [open, initialData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
